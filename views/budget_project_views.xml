@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Project List View -->
+    <record id="view_budget_plan_project_list" model="ir.ui.view">
+        <field name="name">budget.plan.project.list</field>
+        <field name="model">budget.plan.project</field>
+        <field name="arch" type="xml">
+            <list string="Planned Projects" multi_edit="1">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="category_id"/>
+                <field name="status_group" widget="badge" decoration-info="status_group == 'pipeline'" decoration-success="status_group == 'committed'" decoration-warning="status_group == 'pbf'"/>
+                <field name="contract_value" sum="Total Contract"/>
+                <field name="revenue_planned" sum="Total Revenue"/>
+                <field name="direct_costs_planned" sum="Total Costs"/>
+                <field name="gross_margin" sum="Total Gross Margin"/>
+                <field name="margin_pct"/>
+                <field name="cash_in_planned" sum="Total Cash In"/>
+                <field name="cash_out_planned" sum="Total Cash Out"/>
+                <field name="net_cash_planned" sum="Total Net Cash"/>
+                <field name="revenue_spread_valid" widget="boolean_toggle"/>
+                <field name="costs_spread_valid" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Project Search View -->
+    <record id="view_budget_plan_project_search" model="ir.ui.view">
+        <field name="name">budget.plan.project.search</field>
+        <field name="model">budget.plan.project</field>
+        <field name="arch" type="xml">
+            <search string="Search Projects">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="department_id"/>
+                <field name="client_id"/>
+                <field name="category_id"/>
+                <filter string="Pipeline" name="filter_pipeline" domain="[('status_group', '=', 'pipeline')]"/>
+                <filter string="Committed" name="filter_committed" domain="[('status_group', '=', 'committed')]"/>
+                <filter string="PBF" name="filter_pbf" domain="[('status_group', '=', 'pbf')]"/>
+                <separator/>
+                <filter string="Stock Sales" name="filter_stock_sales" domain="[('is_stock_sales', '=', True)]"/>
+                <group>
+                    <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Status Group" name="group_status" context="{'group_by': 'status_group'}"/>
+                    <filter string="Category" name="group_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Budget Plan" name="group_plan" context="{'group_by': 'plan_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Project Form View -->
+    <record id="view_budget_plan_project_form" model="ir.ui.view">
+        <field name="name">budget.plan.project.form</field>
+        <field name="model">budget.plan.project</field>
+        <field name="arch" type="xml">
+            <form string="Planned Project">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!-- Validation chips -->
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" string="Project Title / Description"/>
+                        <h1><field name="name" placeholder="Project Name"/></h1>
+                        <h3><field name="code" placeholder="Project Code / Ref (e.g. PRJ-01)"/></h3>
+                    </div>
+
+                    <group>
+                        <group string="Project Identification">
+                            <field name="plan_id" readonly="plan_state != 'draft'"/>
+                            <field name="department_id"/>
+                            <field name="category_id"/>
+                            <field name="is_stock_sales" invisible="1"/>
+                            <field name="client_id"/>
+                        </group>
+                        <group string="Project Classification &amp; Status">
+                            <field name="status_group" widget="radio"/>
+                            <field name="pipeline_substatus" invisible="status_group != 'pipeline'"/>
+                            <field name="wht_rate"/>
+                            <field name="vat_rate"/>
+                        </group>
+                    </group>
+
+                    <group string="Headline Financial Figures (ETB '000)" col="4">
+                        <field name="contract_value"/>
+                        <field name="revenue_planned"/>
+                        <field name="direct_costs_planned"/>
+                        <field name="gross_margin"/>
+                        <field name="margin_pct"/>
+                        <field name="cash_in_planned"/>
+                        <field name="cash_out_planned"/>
+                        <field name="net_cash_planned"/>
+                    </group>
+
+                    <notebook>
+                        <!-- Tab 1: Revenue Accrual Spread -->
+                        <page string="1. Revenue Spread (Accrual)">
+                            <div class="alert alert-info py-2" role="alert">
+                                <strong>Revenue Recognition:</strong> Enter monthly planned revenue recognized in ETB '000. Quarters and annual total are automatically computed.
+                            </div>
+                            <field name="revenue_spread_ids">
+                                <list string="Revenue Spread" editable="bottom" create="0" delete="0">
+                                    <field name="m01" string="Jul"/>
+                                    <field name="m02" string="Aug"/>
+                                    <field name="m03" string="Sep"/>
+                                    <field name="q1" readonly="1" decoration-bf="1"/>
+
+                                    <field name="m04" string="Oct"/>
+                                    <field name="m05" string="Nov"/>
+                                    <field name="m06" string="Dec"/>
+                                    <field name="q2" readonly="1" decoration-bf="1"/>
+
+                                    <field name="m07" string="Jan"/>
+                                    <field name="m08" string="Feb"/>
+                                    <field name="m09" string="Mar"/>
+                                    <field name="q3" readonly="1" decoration-bf="1"/>
+
+                                    <field name="m10" string="Apr"/>
+                                    <field name="m11" string="May"/>
+                                    <field name="m12" string="Jun"/>
+                                    <field name="q4" readonly="1" decoration-bf="1"/>
+
+                                    <field name="annual_total" string="Annual Total" readonly="1" decoration-bf="1"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Tab 2: Direct Costs Spreads -->
+                        <page string="2. Direct Cost Spreads">
+                            <div class="alert alert-info py-2" role="alert">
+                                <strong>Direct Cost Types:</strong> Enter monthly planned costs in ETB '000. Materials (Stock) is non-cash (shows in P&amp;L only). Local/Import purchases &amp; other direct costs track cash outflows. Payment offsets shift cash outflow months (e.g. -2m for imports).
+                            </div>
+                            <field name="cost_spread_ids">
+                                <list string="Cost Spreads" editable="bottom">
+                                    <field name="cost_type"/>
+                                    <field name="payment_offset"/>
+                                    <field name="m01" string="Jul"/>
+                                    <field name="m02" string="Aug"/>
+                                    <field name="m03" string="Sep"/>
+                                    <field name="q1" readonly="1" decoration-bf="1"/>
+                                    <field name="m04" string="Oct"/>
+                                    <field name="m05" string="Nov"/>
+                                    <field name="m06" string="Dec"/>
+                                    <field name="q2" readonly="1" decoration-bf="1"/>
+                                    <field name="m07" string="Jan"/>
+                                    <field name="m08" string="Feb"/>
+                                    <field name="m09" string="Mar"/>
+                                    <field name="q3" readonly="1" decoration-bf="1"/>
+                                    <field name="m10" string="Apr"/>
+                                    <field name="m11" string="May"/>
+                                    <field name="m12" string="Jun"/>
+                                    <field name="q4" readonly="1" decoration-bf="1"/>
+                                    <field name="annual_total" string="Total Cost" readonly="1" decoration-bf="1"/>
+                                    <field name="cash_annual_total" string="Cash Paid" readonly="1" decoration-bf="1"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Tab 3: Cash Receipts Terms -->
+                        <page string="3. Cash Receipt Terms">
+                            <div class="alert alert-info py-2" role="alert">
+                                <strong>Receipt Terms:</strong> Define milestones (Advance, Progress 1-4, Final, Monthly Sales), target receipt month, and gross amount in ETB '000 or % of contract. Net receipts automatically deduct WHT.
+                            </div>
+                            <field name="receipt_term_ids">
+                                <list string="Receipt Terms" editable="bottom">
+                                    <field name="term_type"/>
+                                    <field name="month"/>
+                                    <field name="gross_amount"/>
+                                    <field name="pct_contract"/>
+                                    <field name="wht_rate" readonly="1"/>
+                                    <field name="wht_amount" readonly="1"/>
+                                    <field name="net_amount" readonly="1" decoration-bf="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_budget_plan_project" model="ir.actions.act_window">
+        <field name="name">Planned Projects</field>
+        <field name="res_model">budget.plan.project</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_budget_plan_project_search"/>
+    </record>
+</odoo>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Fiscal Year: EFY 2019 (2026/2027) -->
+        <record id="fy_efy_2019" model="budget.fiscal.year">
+            <field name="name">EFY 2019 (2026/27)</field>
+            <field name="code">EFY2019</field>
+            <field name="date_from">2026-07-08</field>
+            <field name="date_to">2027-07-07</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Months M01 - M12 -->
+        <record id="month_efy2019_m01" model="budget.fiscal.month">
+            <field name="fiscal_year_id" ref="fy_efy_2019"/>
+            <field name="month_number">1</field>
+            <field name="code">M01</field>
+            <field name="name">Jul</field>
+            <field name="local_name">Hamle</field>
+            <field name="quarter">q1</field>
+        </record>
+        <record id="month_efy2019_m02" model="budget.fiscal.month">
+            <field name="fiscal_year_id" ref="fy_efy_2019"/>
+            <field name="month_number">2</field>
+            <field name="code">M02</field>
+            <field name="name">Aug</field>
+            <field name="local_name">Nehase</field>
+            <field name="quarter">q1</field>
+        </record>
+        <record id="month_efy2019_m03" model="budget.fiscal.month">
+            <field name="fiscal_year_id" ref="fy_efy_2019"/>
+            <field name="month_number">3</field>
+            <field name="code">M03</field>
+            <field name="name">Sep</field>
+            <field name="local_name">Meskerem</field>
+            <field name="quarter">q1</field>
+        </record>
+
+        <record id="month_efy2019_m04" model="budget.fiscal.month">
+            <field name="fiscal_year_id" ref="fy_efy_2019"/>
+            <field name="month_number">4</field>
+            <field name="code">M04</field>
+            <field name="name">Oct</field>
+            <field name="local_name">Tikimt</field>
+            <field name="quarter">q2</field>
+        </record>
+        <record id="month_efy2019_m05" model="budget.fiscal.month">
+            <field name="fiscal_year_id" ref="fy_efy_2019"/>
+            <field name="month_number">5</field>
+            <field name="code">M05</field>
+            <field name="name">Nov</field>
+            <field name="local_name">Hidar</field>
+            <field name="quarter">q2</field>
+        </record>
+        <record id="month_efy2019_m06" model="budget.fiscal.month">
+            <field name="fiscal_year_id" ref="fy_efy_2019"/>
+            <field name="month_number">6</field>
+            <field name="code">M06</field>
+            <field name="name">Dec</field>
+            <field name="local_name">Tahsas</field>
+            <field name="quarter">q2</field>
+        </record>
+
+        <record id="month_efy2019_m07" model="budget.fiscal.month">
+            <field name="fiscal_year_id" ref="fy_efy_2019"/>
+            <field name="month_number">7</field>
+            <field name="code">M07</field>
+            <field name="name">Jan</field>
+            <field name="local_name">Tir</field>
+            <field name="quarter">q3</field>
+        </record>
+        <record id="month_efy2019_m08" model="budget.fiscal.month">
+            <field name="fiscal_year_id" ref="fy_efy_2019"/>
+            <field name="month_number">8</field>
+            <field name="code">M08</field>
+            <field name="name">Feb</field>
+            <field name="local_name">Yakatit</field>
+            <field name="quarter">q3</field>
+        </record>
+        <record id="month_efy2019_m09" model="budget.fiscal.month">
+            <field name="fiscal_year_id" ref="fy_efy_2019"/>
+            <field name="month_number">9</field>
+            <field name="code">M09</field>
+            <field name="name">Mar</field>
+            <field name="local_name">Magabit</field>
+            <field name="quarter">q3</field>
+        </record>
+
+        <record id="month_efy2019_m10" model="budget.fiscal.month">
+            <field name="fiscal_year_id" ref="fy_efy_2019"/>
+            <field name="month_number">10</field>
+            <field name="code">M10</field>
+            <field name="name">Apr</field>
+            <field name="local_name">Miyazya</field>
+            <field name="quarter">q4</field>
+        </record>
+        <record id="month_efy2019_m11" model="budget.fiscal.month">
+            <field name="fiscal_year_id" ref="fy_efy_2019"/>
+            <field name="month_number">11</field>
+            <field name="code">M11</field>
+            <field name="name">May</field>
+            <field name="local_name">Ginbot</field>
+            <field name="quarter">q4</field>
+        </record>
+        <record id="month_efy2019_m12" model="budget.fiscal.month">
+            <field name="fiscal_year_id" ref="fy_efy_2019"/>
+            <field name="month_number">12</field>
+            <field name="code">M12</field>
+            <field name="name">Jun</field>
+            <field name="local_name">Sene</field>
+            <field name="quarter">q4</field>
+        </record>
+    </data>
+</odoo>

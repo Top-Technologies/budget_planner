@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Report Viewer Form View -->
+    <record id="view_budget_report_viewer_form" model="ir.ui.view">
+        <field name="name">budget.report.viewer.form</field>
+        <field name="model">budget.report.viewer</field>
+        <field name="arch" type="xml">
+            <form string="Management Approval Report Pack" create="0" delete="0">
+                <header>
+                    <field name="report_type" widget="radio" options="{'horizontal': true}"/>
+                </header>
+                <sheet>
+                    <div class="row align-items-center mb-3 p-2 bg-light border rounded gy-2">
+                        <div class="col-md-4">
+                            <label for="plan_id" class="fw-bold me-2"/>
+                            <field name="plan_id" options="{'no_create': True}" class="w-100"/>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="department_id" class="fw-bold me-2"/>
+                            <field name="department_id" placeholder="All Departments (Company-wide)" options="{'no_create': True}" class="w-100"/>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="period_type" class="fw-bold me-2"/>
+                            <field name="period_type" class="w-100"/>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <span class="badge bg-primary text-white p-2">EFY Planning</span>
+                        </div>
+                    </div>
+
+                    <div class="o_budget_report_container mt-2">
+                        <field name="html_content" widget="html"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Generic Report Hub Action -->
+    <record id="action_budget_report_hub" model="ir.actions.act_window">
+        <field name="name">Derived Reports Hub</field>
+        <field name="res_model">budget.report.viewer</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_report_type': 'orders', 'default_period_type': 'quarterly'}</field>
+    </record>
+
+    <!-- Dedicated Report Actions -->
+    <record id="action_budget_report_orders" model="ir.actions.act_window">
+        <field name="name">Orders Received Report</field>
+        <field name="res_model">budget.report.viewer</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_report_type': 'orders', 'default_period_type': 'quarterly'}</field>
+    </record>
+
+    <record id="action_budget_report_breakdown" model="ir.actions.act_window">
+        <field name="name">Project Breakdown Report</field>
+        <field name="res_model">budget.report.viewer</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_report_type': 'breakdown', 'default_period_type': 'quarterly'}</field>
+    </record>
+
+    <record id="action_budget_report_pnl" model="ir.actions.act_window">
+        <field name="name">Profit &amp; Loss (Accrual)</field>
+        <field name="res_model">budget.report.viewer</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_report_type': 'pnl', 'default_period_type': 'quarterly'}</field>
+    </record>
+
+    <record id="action_budget_report_cashflow" model="ir.actions.act_window">
+        <field name="name">Cash Flow &amp; Position Analysis</field>
+        <field name="res_model">budget.report.viewer</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_report_type': 'cashflow', 'default_period_type': 'quarterly'}</field>
+    </record>
+</odoo>

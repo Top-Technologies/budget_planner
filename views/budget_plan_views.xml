@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Plan List View -->
+    <record id="view_budget_plan_list" model="ir.ui.view">
+        <field name="name">budget.plan.list</field>
+        <field name="model">budget.plan</field>
+        <field name="arch" type="xml">
+            <list string="Budget &amp; Earnings Plans" decoration-muted="state == 'locked'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="fiscal_year_id"/>
+                <field name="version"/>
+                <field name="project_count"/>
+                <field name="total_revenue" sum="Total Revenue"/>
+                <field name="total_direct_costs" sum="Total Costs"/>
+                <field name="total_gross_margin" sum="Total Margin"/>
+                <field name="margin_pct"/>
+                <field name="net_cash_flow" sum="Total Net Cash"/>
+                <field name="min_opening_balance"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'under_review'" decoration-success="state == 'approved'" decoration-muted="state == 'locked'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Plan Kanban View -->
+    <record id="view_budget_plan_kanban" model="ir.ui.view">
+        <field name="name">budget.plan.kanban</field>
+        <field name="model">budget.plan</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" sample="1">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="fiscal_year_id"/>
+                <field name="version"/>
+                <field name="total_revenue"/>
+                <field name="margin_pct"/>
+                <field name="project_count"/>
+                <field name="min_opening_balance"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click p-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="fw-bold text-primary"><field name="code"/></span>
+                                <span class="badge rounded-pill bg-secondary">v<field name="version"/></span>
+                            </div>
+                            <div class="h5 mb-2"><field name="name"/></div>
+                            <div class="text-muted small mb-3"><field name="fiscal_year_id"/></div>
+                            <div class="row g-2 pt-2 border-top">
+                                <div class="col-6">
+                                    <span class="text-muted small d-block">Revenue:</span>
+                                    <span class="fw-bold"><field name="total_revenue"/>k</span>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span class="text-muted small d-block">Margin %:</span>
+                                    <span class="fw-bold text-success"><field name="margin_pct"/>%</span>
+                                </div>
+                                <div class="col-6 mt-2">
+                                    <span class="text-muted small d-block">Projects:</span>
+                                    <span class="badge bg-light text-dark"><field name="project_count"/> items</span>
+                                </div>
+                                <div class="col-6 text-end mt-2">
+                                    <span class="text-muted small d-block">Min Opening Cash:</span>
+                                    <span class="fw-bold text-warning"><field name="min_opening_balance"/>k</span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Plan Form View -->
+    <record id="view_budget_plan_form" model="ir.ui.view">
+        <field name="name">budget.plan.form</field>
+        <field name="model">budget.plan</field>
+        <field name="arch" type="xml">
+            <form string="Budget &amp; Earnings Plan">
+                <header>
+                    <button name="action_submit" string="Submit for Review" type="object" invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_approve" string="Approve Plan" type="object" invisible="state != 'under_review'" class="btn-primary" groups="budget_planner.group_budget_planner_manager"/>
+                    <button name="action_lock" string="Lock as Baseline" type="object" invisible="state != 'approved'" class="btn-secondary" groups="budget_planner.group_budget_planner_manager"/>
+                    <button name="action_create_revision" string="Create Revision (New Version)" type="object" invisible="state not in ['approved', 'locked']" class="btn-outline-primary"/>
+                    <button name="action_reset_draft" string="Reset to Draft" type="object" invisible="state not in ['under_review', 'approved']" groups="budget_planner.group_budget_planner_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,under_review,approved,locked"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-briefcase" type="action" name="%(action_budget_plan_project)d" context="{'search_default_plan_id': id}">
+                            <div class="o_stat_info">
+                                <field name="project_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Projects</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-line-chart" type="object" name="action_view_pnl">
+                            <div class="o_stat_info">
+                                <field name="margin_pct" class="o_stat_value"/>
+                                <span class="o_stat_text">P&amp;L Accrual</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-money" type="object" name="action_view_cash_flow">
+                            <div class="o_stat_info">
+                                <field name="min_opening_balance" class="o_stat_value"/>
+                                <span class="o_stat_text">Cash Flow</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <span class="text-muted"><field name="code"/></span>
+                        <h1><field name="name" placeholder="Plan Title (e.g. EFY 2019 Annual Plan)"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Planning Horizon">
+                            <field name="fiscal_year_id" readonly="state != 'draft'"/>
+                            <field name="version" readonly="1"/>
+                            <field name="parent_id" invisible="not parent_id"/>
+                        </group>
+                        <group string="Company &amp; Units">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                            <div class="text-muted" colspan="2">
+                                <em>* All amounts displayed in thousands of Ethiopian Birr (ETB '000).</em>
+                            </div>
+                        </group>
+                    </group>
+
+                    <group string="Financial Summary Totals (ETB '000)" col="4">
+                        <field name="total_contract_value"/>
+                        <field name="total_revenue"/>
+                        <field name="total_direct_costs"/>
+                        <field name="total_gross_margin"/>
+                        <field name="total_cash_in"/>
+                        <field name="total_cash_out"/>
+                        <field name="net_cash_flow"/>
+                        <field name="min_opening_balance"/>
+                    </group>
+
+                    <notebook>
+                        <!-- Projects Breakdown -->
+                        <page string="Projects (Headline &amp; Spreads)">
+                            <field name="project_ids" readonly="state == 'locked'" context="{'default_plan_id': id}">
+                                <list string="Planned Projects">
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="department_id"/>
+                                    <field name="category_id"/>
+                                    <field name="status_group" widget="badge"/>
+                                    <field name="contract_value" sum="Total Contract"/>
+                                    <field name="revenue_planned" sum="Total Revenue"/>
+                                    <field name="direct_costs_planned" sum="Total Costs"/>
+                                    <field name="gross_margin" sum="Total Margin"/>
+                                    <field name="margin_pct"/>
+                                    <field name="net_cash_planned" sum="Total Net Cash"/>
+                                    <field name="revenue_spread_valid" widget="boolean_toggle"/>
+                                    <field name="costs_spread_valid" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Derived Reports Hub -->
+                        <page string="Derived Reports (Report Pack)">
+                            <div class="row g-3 p-3">
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded bg-light">
+                                        <div class="h5 text-primary mb-1">1. Orders Received Report</div>
+                                        <p class="text-muted small mb-3">View total contract values recognized in the month revenue begins. Stock sales indicated as monthly sales.</p>
+                                        <button name="action_view_orders_received" string="View Orders Received" type="object" class="btn btn-outline-primary btn-sm" icon="fa-shopping-cart"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded bg-light">
+                                        <div class="h5 text-primary mb-1">2. Project Breakdown Report</div>
+                                        <p class="text-muted small mb-3">Detailed project-by-project breakdown grouped by Department and Status (Pipeline, Committed, PBF).</p>
+                                        <button name="action_view_project_breakdown" string="View Project Breakdown" type="object" class="btn btn-outline-primary btn-sm" icon="fa-tasks"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded bg-light">
+                                        <div class="h5 text-primary mb-1">3. Profit &amp; Loss (Accrual)</div>
+                                        <p class="text-muted small mb-3">Accrual revenue recognition vs total direct costs (including Stock COGS) and Gross Margin.</p>
+                                        <button name="action_view_pnl" string="View Profit &amp; Loss" type="object" class="btn btn-outline-primary btn-sm" icon="fa-line-chart"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded bg-light">
+                                        <div class="h5 text-primary mb-1">4. Cash Flow &amp; Position Analysis</div>
+                                        <p class="text-muted small mb-3">Monthly receipts (net of WHT), payments (shifted with offsets), running balance, and Minimum Opening Cash Required.</p>
+                                        <button name="action_view_cash_flow" string="View Cash Flow &amp; Position" type="object" class="btn btn-outline-primary btn-sm" icon="fa-money"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </page>
+
+                        <!-- Notes & Revisions -->
+                        <page string="Notes &amp; Revision Log">
+                            <group>
+                                <field name="notes" placeholder="Assumptions, executive notes, or approval caveats..."/>
+                            </group>
+                            <field name="revision_ids" readonly="1" invisible="not revision_ids">
+                                <list string="Prior Revisions">
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="version"/>
+                                    <field name="create_date"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_budget_plan" model="ir.actions.act_window">
+        <field name="name">Budget &amp; Earnings Plans</field>
+        <field name="res_model">budget.plan</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Annual Budget &amp; Earnings Plan.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sample Departments (EMD & ALD from workbook) -->
+        <record id="dept_emd" model="hr.department">
+            <field name="name">EMD (Enterprise Management Division)</field>
+        </record>
+
+        <record id="dept_ald" model="hr.department">
+            <field name="name">ALD (Applied Logistics Division)</field>
+        </record>
+
+        <!-- Sample Budget Plan for EFY 2019 -->
+        <record id="demo_plan_efy2019" model="budget.plan">
+            <field name="name">BUD/2026/0001 - EFY 2019 Master Plan v1.0</field>
+            <field name="code">BUD/2026/0001</field>
+            <field name="fiscal_year_id" ref="budget_planner.fy_efy_2019"/>
+            <field name="version">1.0</field>
+            <field name="state">draft</field>
+        </record>
+
+        <!-- Project 1: EMD Federal Infrastructure (Committed) -->
+        <record id="demo_proj_emd_01" model="budget.plan.project">
+            <field name="plan_id" ref="demo_plan_efy2019"/>
+            <field name="code">EMD-001</field>
+            <field name="name">Federal Ministry IT Infrastructure Upgrade</field>
+            <field name="department_id" ref="dept_emd"/>
+            <field name="category_id" ref="budget_planner.cat_fed_gov"/>
+            <field name="status_group">committed</field>
+            <field name="contract_value">60000.0</field>
+            <field name="wht_rate">2.0</field>
+            <field name="vat_rate">15.0</field>
+            <field name="revenue_planned">60000.0</field>
+            <field name="direct_costs_planned">42000.0</field>
+        </record>
+
+        <!-- Project 2: ALD Regional Logistics Automation (Pipeline - Planning) -->
+        <record id="demo_proj_ald_01" model="budget.plan.project">
+            <field name="plan_id" ref="demo_plan_efy2019"/>
+            <field name="code">ALD-001</field>
+            <field name="name">Regional Warehouse Automation &amp; Tracking</field>
+            <field name="department_id" ref="dept_ald"/>
+            <field name="category_id" ref="budget_planner.cat_reg_gov"/>
+            <field name="status_group">pipeline</field>
+            <field name="pipeline_substatus">planning</field>
+            <field name="contract_value">35000.0</field>
+            <field name="wht_rate">2.0</field>
+            <field name="vat_rate">15.0</field>
+            <field name="revenue_planned">35000.0</field>
+            <field name="direct_costs_planned">24000.0</field>
+        </record>
+
+        <!-- Project 3: EMD Stock Hardware Sales (Stock Sales) -->
+        <record id="demo_proj_emd_stock" model="budget.plan.project">
+            <field name="plan_id" ref="demo_plan_efy2019"/>
+            <field name="code">EMD-STK</field>
+            <field name="name">Network Switches &amp; Peripheral Stock Sales</field>
+            <field name="department_id" ref="dept_emd"/>
+            <field name="category_id" ref="budget_planner.cat_stock_sales"/>
+            <field name="status_group">committed</field>
+            <field name="contract_value">18000.0</field>
+            <field name="wht_rate">2.0</field>
+            <field name="vat_rate">15.0</field>
+            <field name="revenue_planned">18000.0</field>
+            <field name="direct_costs_planned">12000.0</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu -->
+    <menuitem id="menu_budget_planner_root"
+              name="Budget Planner"
+              sequence="20"/>
+
+    <!-- 1. Planning Menus -->
+    <menuitem id="menu_budget_planning_root"
+              name="Planning"
+              parent="menu_budget_planner_root"
+              sequence="10"/>
+
+    <menuitem id="menu_budget_plans"
+              name="Budget &amp; Earnings Plans"
+              parent="menu_budget_planning_root"
+              action="action_budget_plan"
+              sequence="10"/>
+
+    <menuitem id="menu_budget_projects"
+              name="Planned Projects"
+              parent="menu_budget_planning_root"
+              action="action_budget_plan_project"
+              sequence="20"/>
+
+    <!-- 2. Reports Menus -->
+    <menuitem id="menu_budget_reports_root"
+              name="Management Reports"
+              parent="menu_budget_planner_root"
+              sequence="20"/>
+
+    <menuitem id="menu_budget_report_hub"
+              name="Derived Reports Hub"
+              parent="menu_budget_reports_root"
+              action="action_budget_report_hub"
+              sequence="5"/>
+
+    <menuitem id="menu_budget_report_orders"
+              name="1. Orders Received"
+              parent="menu_budget_reports_root"
+              action="action_budget_report_orders"
+              sequence="10"/>
+
+    <menuitem id="menu_budget_report_breakdown"
+              name="2. Project Breakdown"
+              parent="menu_budget_reports_root"
+              action="action_budget_report_breakdown"
+              sequence="20"/>
+
+    <menuitem id="menu_budget_report_pnl"
+              name="3. Profit &amp; Loss (Accrual)"
+              parent="menu_budget_reports_root"
+              action="action_budget_report_pnl"
+              sequence="30"/>
+
+    <menuitem id="menu_budget_report_cashflow"
+              name="4. Cash Flow &amp; Position"
+              parent="menu_budget_reports_root"
+              action="action_budget_report_cashflow"
+              sequence="40"/>
+
+    <!-- 3. Configuration Menus -->
+    <menuitem id="menu_budget_configuration_root"
+              name="Configuration"
+              parent="menu_budget_planner_root"
+              groups="budget_planner.group_budget_planner_manager"
+              sequence="90"/>
+
+    <menuitem id="menu_budget_fiscal_years"
+              name="Fiscal Years (EFY)"
+              parent="menu_budget_configuration_root"
+              action="action_budget_fiscal_year"
+              sequence="10"/>
+
+    <menuitem id="menu_budget_categories"
+              name="Project Categories"
+              parent="menu_budget_configuration_root"
+              action="action_budget_category"
+              sequence="20"/>
+</odoo>
